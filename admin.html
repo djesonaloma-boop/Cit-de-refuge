@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MI.C.L.A — Administration</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+:root{
+  --blue:#06152f;
+  --blue2:#0b2145;
+  --gold:#d8b45a;
+  --gold-light:#f1d98b;
+  --white:#fff;
+  --muted:#91a2bc;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-family:Arial,sans-serif;
+
+  background:var(--blue);
+  color:white;
+
+  position:relative;
+  overflow:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+
+  background:
+    linear-gradient(
+      rgba(6,21,47,.93),
+      rgba(6,21,47,.97)
+    ),
+    url("../logo.png") center/300px auto no-repeat;
+
+  pointer-events:none;
+}
+
+.login-box{
+  position:relative;
+  z-index:2;
+
+  width:92%;
+  max-width:410px;
+
+  padding:35px 25px;
+
+  background:rgba(8,25,53,.97);
+
+  border:1px solid rgba(216,180,90,.30);
+
+  border-radius:24px;
+
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.55);
+
+  text-align:center;
+}
+
+.logo{
+  width:95px;
+  height:95px;
+
+  object-fit:contain;
+
+  border-radius:50%;
+
+  border:2px solid var(--gold);
+
+  margin-bottom:18px;
+
+  background:#06152f;
+}
+
+h1{
+  font-size:26px;
+  margin-bottom:8px;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:28px;
+}
+
+.input-box{
+  position:relative;
+  margin-bottom:17px;
+}
+
+.input-box i.lock{
+  position:absolute;
+  left:15px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  color:var(--gold);
+}
+
+input{
+  width:100%;
+
+  padding:15px 45px;
+
+  border-radius:13px;
+
+  border:1px solid rgba(216,180,90,.25);
+
+  background:#06152f;
+
+  color:white;
+
+  outline:none;
+
+  font-size:15px;
+}
+
+input:focus{
+  border-color:var(--gold);
+}
+
+.eye{
+  position:absolute;
+
+  right:15px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  color:var(--muted);
+
+  cursor:pointer;
+}
+
+button{
+  width:100%;
+
+  padding:15px;
+
+  border:0;
+
+  border-radius:13px;
+
+  background:linear-gradient(
+    135deg,
+    var(--gold),
+    var(--gold-light)
+  );
+
+  color:#06152f;
+
+  font-size:15px;
+
+  font-weight:bold;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+}
+
+.error{
+  display:none;
+
+  margin-top:15px;
+
+  padding:11px;
+
+  border-radius:10px;
+
+  background:rgba(255,70,70,.10);
+
+  border:1px solid rgba(255,100,100,.25);
+
+  color:#ff9b9b;
+
+  font-size:13px;
+}
+
+.footer{
+  margin-top:22px;
+
+  color:#687b98;
+
+  font-size:11px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+  <img
+    src="admin-logo.png"
+    onerror="this.src='../logo.png'"
+    class="logo"
+    alt="MI.C.L.A"
+  >
+
+  <h1>
+    Administration
+  </h1>
+
+  <div class="subtitle">
+    MI.C.L.A — Cité de Refuge
+  </div>
+
+
+  <form id="loginForm">
+
+    <div class="input-box">
+
+      <i class="fa-solid fa-lock lock"></i>
+
+      <input
+        id="adminCode"
+        type="password"
+        placeholder="Code secret"
+        autocomplete="off"
+        required
+      >
+
+      <span
+        class="eye"
+        id="togglePassword"
+      >
+        <i class="fa-solid fa-eye"></i>
+      </span>
+
+    </div>
+
+
+    <button type="submit">
+
+      <i class="fa-solid fa-right-to-bracket"></i>
+
+      &nbsp;
+
+      Accéder au Dashboard
+
+    </button>
+
+  </form>
+
+
+  <div
+    class="error"
+    id="error"
+  >
+    <i class="fa-solid fa-circle-exclamation"></i>
+
+    Code secret incorrect.
+  </div>
+
+
+  <div class="footer">
+    Espace sécurisé — Administration MI.C.L.A
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   CODE SECRET
+========================================= */
+
+const CODE_SECRET = "MICLA123@";
+
+
+/* =========================================
+   ÉLÉMENTS
+========================================= */
+
+const form =
+  document.getElementById("loginForm");
+
+const input =
+  document.getElementById("adminCode");
+
+const error =
+  document.getElementById("error");
+
+const toggle =
+  document.getElementById("togglePassword");
+
+
+/* =========================================
+   CONNEXION
+========================================= */
+
+form.addEventListener(
+  "submit",
+  function(event){
+
+    event.preventDefault();
+
+    const code =
+      input.value.trim();
+
+
+    if(code === CODE_SECRET){
+
+      /*
+       * Enregistrer l'accès admin
+       */
+      localStorage.setItem(
+        "micla_admin_auth",
+        "true"
+      );
+
+
+      error.style.display = "none";
+
+
+      /*
+       * Ouvrir le dashboard
+       */
+      window.location.replace(
+        "admin-dash.html"
+      );
+
+
+    }else{
+
+      error.style.display = "block";
+
+      input.value = "";
+
+      input.focus();
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   AFFICHER / CACHER LE CODE
+========================================= */
+
+toggle.addEventListener(
+  "click",
+  function(){
+
+    if(input.type === "password"){
+
+      input.type = "text";
+
+      toggle.innerHTML =
+        '<i class="fa-solid fa-eye-slash"></i>';
+
+    }else{
+
+      input.type = "password";
+
+      toggle.innerHTML =
+        '<i class="fa-solid fa-eye"></i>';
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   CACHER L'ERREUR
+========================================= */
+
+input.addEventListener(
+  "input",
+  function(){
+
+    error.style.display = "none";
+
+  }
+);
+
+</script>
+
+</body>
+</html>

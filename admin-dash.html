@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Admin — MI.C.L.A CONNECTÉ</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>:root{--bg:#050b14;--card:#0d1726;--gold:#d8b45a;--gold2:#f1d98b;--muted:#91a2bc;--border:rgba(216,180,90,.18)}*{box-sizing:border-box;margin:0;padding:0}body{background:#050b14;color:#fff;font-family:Arial}header{position:sticky;top:0;background:#040e22;padding:12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.main{max-width:1100px;margin:auto;padding:20px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.box{background:#0d1726;border:1px solid var(--border);border-radius:16px;padding:16px}.box h3{color:var(--gold2);font-size:14px}.box strong{font-size:24px;display:block;margin:6px 0}input,textarea,select{width:100%;background:#07111e;border:1px solid var(--border);color:#fff;border-radius:10px;padding:10px;margin:5px 0}button{border:none;border-radius:10px;padding:10px;font-weight:bold;cursor:pointer}.gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;width:100%}.item{background:#081321;border:1px solid var(--border);border-radius:10px;padding:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}@media(max-width:700px){.grid4{grid-template-columns:1fr 1fr}}</style>
+</head><body>
+<header><div><b style="color:var(--gold2)">MI.C.L.A</b> <small>Administration CONNECTÉE à Église</small></div><a href="eglises.html" style="background:#111f32;color:#fff;padding:8px 12px;border-radius:10px;text-decoration:none;border:1px solid var(--border)">Voir Église</a></header>
+<div class="main">
+<div class="grid4">
+<div class="box"><h3>📢 Annonces</h3><strong id="cAn">0</strong><small id="tAn" style="color:var(--muted)">Il n'y a aucun annonce</small></div>
+<div class="box"><h3>🙏 Prières</h3><strong id="cPr">0</strong><small id="tPr" style="color:var(--muted)">Il n'y a aucune prière</small></div>
+<div class="box"><h3>🎙️ Vocaux</h3><strong id="cVo">0</strong><small id="tVo" style="color:var(--muted)">Il n'y a aucun vocal</small></div>
+<div class="box"><h3>💬 Messages</h3><strong id="cMe">0</strong><small id="tMe" style="color:var(--muted)">Il n'y a aucun message</small></div>
+</div>
+
+<div style="margin-top:20px;background:#0d1726;border:1px solid var(--border);border-radius:16px;padding:16px">
+<label>Publier pour</label><select id="resp"><option value="pasteur">Pasteur Jérémie</option><option value="berger">Berger Chardin</option><option value="tous">Les deux</option></select>
+<h3 style="margin-top:12px;color:var(--gold2)">📢 Nouvelle Annonce</h3><input id="aTitle" placeholder="Titre"><textarea id="aCont" placeholder="Contenu"></textarea><button class="gold" onclick="pub('annonces')">Publier Annonce → Église</button>
+<h3 style="margin-top:12px;color:var(--gold2)">🙏 Nouvelle Prière</h3><input id="pTitle" placeholder="Titre"><textarea id="pCont" placeholder="Prière"></textarea><button class="gold" onclick="pub('prieres')">Publier Prière → Église</button>
+<h3 style="margin-top:12px;color:var(--gold2)">💬 Nouveau Message</h3><input id="mTitle" placeholder="Titre"><textarea id="mCont" placeholder="Message"></textarea><button class="gold" onclick="pub('messages')">Publier Message → Église</button>
+<h3 style="margin-top:12px;color:var(--gold2)">🎙️ Nouveau Vocal (10s)</h3><input id="vTitle" placeholder="Titre vocal"><div style="text-align:center"><div id="timer" style="color:var(--gold2);font-size:22px">00:00</div><button onclick="recStart()" id="bStart" style="background:#d8b45a;color:#000">🎙️ Rec</button> <button onclick="recStop()" id="bStop" disabled style="background:#ff777733;color:#ff7777">⏹️ Stop</button><audio id="prev" controls style="width:100%;display:none"></audio></div><button class="gold" onclick="pub('vocaux')" id="bPub" disabled>Publier Vocal → Église</button>
+</div>
+
+<div id="lists" style="margin-top:20px"></div>
+</div>
+<script>
+let blob=null,mr,chunks=[],sec=0,tmr;
+function get(k){try{return JSON.parse(localStorage.getItem(k)||"[]")}catch{return[]}}
+function gen(){return Date.now().toString()}
+function savePont(type,data){
+  let r=document.getElementById("resp").value; let targets=r==="tous"?["pasteur","berger"]:[r];
+  targets.forEach(p=>{
+    ["micla_"+p+"_"+type,"micla_"+type,"micla_admin_"+type,"micla_"+p+"_"+type.replace("annonces","announcements").replace("vocaux","audio").replace("prieres","prayers")].forEach(k=>{let a=get(k);a.unshift(data);localStorage.setItem(k,JSON.stringify(a))});
+  }); load();
+}
+function pub(type){
+  let t,c; if(type==="annonces"){t=aTitle.value.trim();c=aCont.value.trim()} if(type==="prieres"){t=pTitle.value.trim();c=pCont.value.trim()} if(type==="messages"){t=mTitle.value.trim();c=mCont.value.trim()} if(type==="vocaux"){t=vTitle.value.trim(); if(!blob) return alert("Enregistre"); }
+  if(type!=="vocaux" && (!t||!c)) return alert("Remplis");
+  if(type==="vocaux"){ toB64(blob).then(b64=>{ if(b64.length>800000) return alert("Trop long"); savePont(type,{id:gen(),title:t,audio:b64,url:b64,date:new Date().toISOString()}); blob=null; prev.style.display="none"; bPub.disabled=true; vTitle.value=""; }); return; }
+  savePont(type,{id:gen(),title:t,content:c,text:c,date:new Date().toISOString()});
+  if(type==="annonces"){aTitle.value="";aCont.value=""} if(type==="prieres"){pTitle.value="";pCont.value=""} if(type==="messages"){mTitle.value="";mCont.value=""}
+}
+function toB64(b){return new Promise(r=>{let rd=new FileReader();rd.onload=()=>r(rd.result);rd.readAsDataURL(b)})}
+function recStart(){navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{chunks=[];mr=new MediaRecorder(s,{bitsPerSecond:24000});mr.ondataavailable=e=>chunks.push(e.data);mr.onstop=()=>{blob=new Blob(chunks,{type:"audio/webm"});prev.src=URL.createObjectURL(blob);prev.style.display="block";bPub.disabled=false};mr.start();sec=0;tmr=setInterval(()=>{sec++;timer.textContent="00:"+(sec<10?"0"+sec:sec);if(sec>=15)recStop()},1000);bStart.disabled=true;bStop.disabled=false})}
+function recStop(){if(mr&&mr.state!=="inactive")mr.stop();mr.stream.getTracks().forEach(t=>t.stop());clearInterval(tmr);bStart.disabled=false;bStop.disabled=true}
+function del(type,id){["micla_pasteur_"+type,"micla_berger_"+type,"micla_"+type,"micla_admin_"+type].forEach(k=>{localStorage.setItem(k,JSON.stringify(get(k).filter(x=>x.id!==id))) });load()}
+function load(){
+  let an=get("micla_pasteur_annonces").length+get("micla_berger_annonces").length;
+  let pr=get("micla_pasteur_prieres").length+get("micla_berger_prieres").length;
+  let vo=get("micla_pasteur_vocaux").length+get("micla_berger_vocaux").length;
+  let me=get("micla_pasteur_messages").length+get("micla_berger_messages").length;
+  cAn.textContent=an; cPr.textContent=pr; cVo.textContent=vo; cMe.textContent=me;
+  tAn.textContent=an?"✔️ Connecté à Église":"Il n'y a aucun annonce";
+  tPr.textContent=pr?"✔️ Connecté à Église":"Il n'y a aucune prière";
+  tVo.textContent=vo?"✔️ Connecté à Église":"Il n'y a aucun vocal";
+  tMe.textContent=me?"✔️ Connecté à Église":"Il n'y a aucun message";
+  lists.innerHTML=["annonces","prieres","vocaux","messages"].map(type=>{
+    let a=get("micla_pasteur_"+type); return `<div class="box" style="margin-top:10px"><h3>${type}</h3>${a.length?a.map(i=>`<div class="item"><b>${i.title}</b><button onclick="del('${type}','${i.id}')" style="background:#ff777733;color:#ff7777">Supprimer</button></div>`).join(""):`Il n'y a aucun ${type}`}</div>`;
+  }).join("");
+}
+load(); setInterval(load,2000);
+</script></body></html>

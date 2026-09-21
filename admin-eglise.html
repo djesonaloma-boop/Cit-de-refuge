@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Église — MI.C.L.A</title>
+
+<style>
+:root{
+  --bg:#050b14;
+  --card:#0d1726;
+  --card2:#111f32;
+  --gold:#d6ad55;
+  --gold2:#f1d58b;
+  --text:#eef3fa;
+  --muted:#8e9caf;
+  --danger:#e05252;
+  --success:#35c58b;
+  --border:rgba(255,255,255,.08);
+  --radius:18px;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:
+    radial-gradient(circle at top right,rgba(214,173,85,.08),transparent 35%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(5,11,20,.94);
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid var(--border);
+  padding:14px;
+}
+
+.header-inner{
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  width:45px;
+  height:45px;
+  object-fit:contain;
+  border-radius:12px;
+}
+
+.brand strong{
+  display:block;
+  color:var(--gold2);
+}
+
+.brand small{
+  color:var(--muted);
+}
+
+.header-actions{
+  display:flex;
+  gap:8px;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:25px 15px 60px;
+}
+
+.page-title{
+  margin-bottom:20px;
+}
+
+.page-title h1{
+  font-size:28px;
+  margin-bottom:7px;
+}
+
+.page-title p{
+  color:var(--muted);
+}
+
+.responsable-box{
+  background:linear-gradient(145deg,#151f31,#0c1726);
+  border:1px solid rgba(214,173,85,.25);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:20px;
+}
+
+.responsable-box label{
+  color:var(--gold2);
+  font-weight:bold;
+}
+
+.responsable-box select{
+  margin-top:9px;
+}
+
+select,
+input,
+textarea{
+  width:100%;
+  background:#07111e;
+  color:white;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px;
+  outline:none;
+  font-size:14px;
+}
+
+select:focus,
+input:focus,
+textarea:focus{
+  border-color:var(--gold);
+}
+
+select option{
+  background:#0d1726;
+}
+
+.menu{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:12px;
+  margin-bottom:20px;
+}
+
+.menu a{
+  flex-shrink:0;
+  text-decoration:none;
+  color:var(--text);
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:13px;
+}
+
+.section{
+  background:linear-gradient(145deg,var(--card),var(--card2));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,.18);
+}
+
+.section h2{
+  color:var(--gold2);
+  margin-bottom:6px;
+  font-size:21px;
+}
+
+.section-description{
+  color:var(--muted);
+  margin-bottom:18px;
+  font-size:14px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.full{
+  grid-column:1/-1;
+}
+
+label{
+  display:block;
+  color:#cdd6e3;
+  font-size:13px;
+  margin-bottom:7px;
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:15px;
+}
+
+button,
+.btn{
+  border:none;
+  cursor:pointer;
+  text-decoration:none;
+  font-weight:bold;
+  border-radius:11px;
+  padding:10px 14px;
+  font-size:14px;
+}
+
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#101010;
+}
+
+.btn-dark{
+  background:var(--card2);
+  color:var(--text);
+  border:1px solid var(--border);
+}
+
+.btn-danger{
+  background:rgba(224,82,82,.12);
+  color:#ff8585;
+  border:1px solid rgba(224,82,82,.25);
+}
+
+.btn-success{
+  background:rgba(53,197,139,.12);
+  color:#62e0aa;
+  border:1px solid rgba(53,197,139,.25);
+}
+
+.list{
+  margin-top:20px;
+  display:grid;
+  gap:12px;
+}
+
+.item{
+  background:#081321;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:15px;
+}
+
+.item-title{
+  color:var(--gold2);
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+.item-meta{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:9px;
+}
+
+.item-content{
+  color:#dce4ee;
+  white-space:pre-wrap;
+  line-height:1.5;
+  font-size:14px;
+}
+
+.item-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.record-box{
+  background:#07111e;
+  border:1px dashed rgba(214,173,85,.35);
+  border-radius:15px;
+  padding:18px;
+  text-align:center;
+  margin-top:15px;
+}
+
+.record-status{
+  color:var(--muted);
+  margin:8px 0;
+}
+
+.timer{
+  color:var(--gold2);
+  font-size:28px;
+  font-weight:bold;
+  margin:10px 0;
+}
+
+audio{
+  width:100%;
+  margin-top:12px;
+}
+
+.saved-contact{
+  margin-top:15px;
+  padding:14px;
+  border-radius:12px;
+  background:#07111e;
+  color:var(--muted);
+}
+
+.saved-contact strong{
+  color:var(--gold2);
+}
+
+.empty{
+  color:var(--muted);
+  text-align:center;
+  padding:20px;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:20px;
+  transform:translateX(-50%) translateY(100px);
+  background:#152238;
+  color:white;
+  padding:13px 18px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  z-index:999;
+  opacity:0;
+  transition:.3s;
+}
+
+.toast.show{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;
+}
+
+@media(max-width:700px){
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .full{
+    grid-column:auto;
+  }
+
+  .header-actions .btn{
+    padding:9px 10px;
+    font-size:12px;
+  }
+
+  .brand small{
+    display:none;
+  }
+
+  .page-title h1{
+    font-size:23px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+
+    <div class="brand">
+      <img src="../logo.png" alt="MI.C.L.A">
+
+      <div>
+        <strong>MI.C.L.A</strong>
+        <small>Cité de Refuge — Administration</small>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <a href="admin-dash.html" class="btn btn-dark">
+        ← Dashboard
+      </a>
+
+      <button class="btn btn-danger" onclick="logout()">
+        Déconnexion
+      </button>
+    </div>
+
+  </div>
+</header>
+
+
+<main class="container">
+
+  <div class="page-title">
+    <h1>Gestion Pasteur & Berger</h1>
+    <p>
+      Gérez les messages, vocaux, prières, annonces et contacts.
+    </p>
+  </div>
+
+
+  <!-- RESPONSABLE -->
+
+  <div class="responsable-box">
+
+    <label for="responsable">
+      👤 Responsable concerné
+    </label>
+
+    <select id="responsable" onchange="changeResponsable()">
+
+      <option value="pasteur">
+        Pasteur Jérémie Bakadisanga
+      </option>
+
+      <option value="berger">
+        Berger Chardin Vuanda
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <nav class="menu">
+
+    <a href="#messages">💬 Messages</a>
+    <a href="#vocaux">🎙️ Vocaux</a>
+    <a href="#prieres">🙏 Prières</a>
+    <a href="#annonces">📢 Annonces</a>
+    <a href="#appel">📞 Appel</a>
+    <a href="#whatsapp">🟢 WhatsApp</a>
+
+  </nav>
+
+
+  <!-- MESSAGES -->
+
+  <section class="section" id="messages">
+
+    <h2>💬 Messages</h2>
+
+    <p class="section-description">
+      Publier un message pour le responsable sélectionné.
+    </p>
+
+    <div class="form-grid">
+
+      <div>
+        <label>Titre</label>
+        <input id="messageTitle"
+          placeholder="Titre du message">
+      </div>
+
+      <div>
+        <label>Nom de l'auteur</label>
+        <input id="messageAuthor"
+          placeholder="Ex : Pasteur Jérémie">
+      </div>
+
+      <div class="full">
+
+        <label>Message</label>
+
+        <textarea
+          id="messageContent"
+          placeholder="Écrivez votre message ici..."></textarea>
+
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <button class="btn btn-gold"
+        onclick="saveMessage()">
+        Publier
+      </button>
+
+      <button class="btn btn-dark"
+        onclick="cancelMessageEdit()">
+        Annuler
+      </button>
+
+    </div>
+
+    <div id="messageList" class="list"></div>
+
+  </section>
+
+
+  <!-- VOCAUX -->
+
+  <section class="section" id="vocaux">
+
+    <h2>🎙️ Vocaux</h2>
+
+    <p class="section-description">
+      Enregistrez directement un vocal avec le microphone du téléphone.
+    </p>
+
+    <div class="form-grid">
+
+      <div>
+        <label>Titre du vocal</label>
+
+        <input id="vocalTitle"
+          placeholder="Titre du vocal">
+      </div>
+
+      <div>
+        <label>Nom de l'auteur</label>
+
+        <input id="vocalAuthor"
+          placeholder="Ex : Pasteur Jérémie">
+      </div>
+
+    </div>
+
+
+    <div class="record-box">
+
+      <div id="recordStatus"
+        class="record-status">
+        Prêt pour l'enregistrement
+      </div>
+
+      <div id="recordTimer"
+        class="timer">
+        00:00
+      </div>
+
+      <div class="actions"
+        style="justify-content:center;">
+
+        <button
+          id="startRecordBtn"
+          class="btn btn-gold"
+          onclick="startRecording()">
+          🎙️ Commencer
+        </button>
+
+        <button
+          id="stopRecordBtn"
+          class="btn btn-danger"
+          onclick="stopRecording()"
+          disabled>
+          ⏹️ Arrêter
+        </button>
+
+      </div>
+
+      <audio
+        id="audioPreview"
+        controls
+        hidden>
+      </audio>
+
+    </div>
+
+
+    <div class="actions">
+
+      <button
+        id="publishVocalBtn"
+        class="btn btn-success"
+        onclick="saveVocal()"
+        disabled>
+        Publier le vocal
+      </button>
+
+      <button
+        class="btn btn-dark"
+        onclick="cancelVocalEdit()">
+        Annuler
+      </button>
+
+    </div>
+
+
+    <div id="vocalList"
+      class="list"></div>
+
+  </section>
+
+
+  <!-- PRIERES -->
+
+  <section class="section" id="prieres">
+
+    <h2>🙏 Prières</h2>
+
+    <p class="section-description">
+      Publier une prière pour le responsable sélectionné.
+    </p>
+
+    <div class="form-grid">
+
+      <div>
+        <label>Titre</label>
+
+        <input id="prayerTitle"
+          placeholder="Titre de la prière">
+      </div>
+
+      <div>
+        <label>Nom de l'auteur</label>
+
+        <input id="prayerAuthor"
+          placeholder="Ex : Pasteur Jérémie">
+      </div>
+
+      <div class="full">
+
+        <label>Prière</label>
+
+        <textarea
+          id="prayerContent"
+          placeholder="Écrivez la prière ici..."></textarea>
+
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <button class="btn btn-gold"
+        onclick="savePrayer()">
+        Publier
+      </button>
+
+      <button class="btn btn-dark"
+        onclick="cancelPrayerEdit()">
+        Annuler
+      </button>
+
+    </div>
+
+    <div id="prayerList"
+      class="list"></div>
+
+  </section>
+
+
+  <!-- ANNONCES -->
+
+  <section class="section" id="annonces">
+
+    <h2>📢 Annonces</h2>
+
+    <p class="section-description">
+      Publier une annonce pour le responsable sélectionné.
+    </p>
+
+    <div class="form-grid">
+
+      <div>
+        <label>Titre</label>
+
+        <input id="announcementTitle"
+          placeholder="Titre de l'annonce">
+      </div>
+
+      <div>
+        <label>Date</label>
+
+        <input id="announcementDate"
+          type="date">
+      </div>
+
+      <div>
+        <label>Heure</label>
+
+        <input id="announcementTime"
+          type="time">
+      </div>
+
+      <div>
+        <label>Lieu</label>
+
+        <input id="announcementPlace"
+          placeholder="Lieu">
+      </div>
+
+      <div class="full">
+
+        <label>Annonce</label>
+
+        <textarea
+          id="announcementContent"
+          placeholder="Écrivez l'annonce..."></textarea>
+
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <button class="btn btn-gold"
+        onclick="saveAnnouncement()">
+        Publier
+      </button>
+
+      <button class="btn btn-dark"
+        onclick="cancelAnnouncementEdit()">
+        Annuler
+      </button>
+
+    </div>
+
+    <div id="announcementList"
+      class="list"></div>
+
+  </section>
+
+
+  <!-- APPEL -->
+
+  <section class="section" id="appel">
+
+    <h2>📞 Appel</h2>
+
+    <p class="section-description">
+      Numéro d'appel du responsable sélectionné.
+    </p>
+
+    <div class="form-grid">
+
+      <div>
+        <label>Nom</label>
+
+        <input id="callName"
+          placeholder="Nom">
+      </div>
+
+      <div>
+        <label>Numéro</label>
+
+        <input id="callNumber"
+          type="tel"
+          placeholder="+243 000 000 000">
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <button class="btn btn-gold"
+        onclick="saveCall()">
+        Enregistrer
+      </button>
+
+    </div>
+
+    <div id="callPreview"
+      class="saved-contact">
+      Aucun numéro enregistré.
+    </div>
+
+  </section>
+
+
+  <!-- WHATSAPP -->
+
+  <section class="section" id="whatsapp">
+
+    <h2>🟢 WhatsApp</h2>
+
+    <p class="section-description">
+      Numéro WhatsApp du responsable sélectionné.
+    </p>
+
+    <div class="form-grid">
+
+      <div>
+        <label>Nom</label>
+
+        <input id="whatsappName"
+          placeholder="Nom">
+      </div>
+
+      <div>
+        <label>Numéro WhatsApp</label>
+
+        <input id="whatsappNumber"
+          type="tel"
+          placeholder="+243 000 000 000">
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <button class="btn btn-success"
+        onclick="saveWhatsApp()">
+        Enregistrer WhatsApp
+      </button>
+
+    </div>
+
+    <div id="whatsappPreview"
+      class="saved-contact">
+      Aucun WhatsApp enregistré.
+    </div>
+
+  </section>
+
+</main>
+
+
+<div id="toast"
+  class="toast"></div>
+
+
+<script src="admin-eglise.js"></script>
+
+</body>
+</html>

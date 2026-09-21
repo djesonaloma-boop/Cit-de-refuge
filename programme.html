@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Programme - MI.C.L.A | Cité de Refuge</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --navy:#071225;
+  --navy2:#0d1b3e;
+  --blue:#142a55;
+  --gold:#d6ad55;
+  --gold-light:#f2d58b;
+  --white:#fff;
+  --text:#eaf0fa;
+  --muted:#9aa8bd;
+  --border:rgba(255,255,255,.09);
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 50% 20%,rgba(30,65,130,.28),transparent 40%),
+    linear-gradient(135deg,#040a14,#0a1730 50%,#050b16);
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(4,10,20,.82),rgba(4,10,20,.90)),
+    url("logo.png");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:430px;
+  opacity:.08;
+  pointer-events:none;
+  z-index:-2;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  width:420px;
+  height:420px;
+  border-radius:50%;
+  background:rgba(214,173,85,.08);
+  filter:blur(80px);
+  top:10%;
+  right:-180px;
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* HEADER */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+
+  min-height:75px;
+  padding:10px 18px;
+
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  background:rgba(7,18,37,.88);
+  border-bottom:1px solid rgba(214,173,85,.18);
+
+  backdrop-filter:blur(15px);
+  -webkit-backdrop-filter:blur(15px);
+
+  box-shadow:0 8px 30px rgba(0,0,0,.25);
+
+  animation:headerDown .7s ease;
+}
+
+header img{
+  width:50px;
+  height:50px;
+  object-fit:cover;
+  border-radius:50%;
+  background:#fff;
+
+  border:2px solid var(--gold);
+
+  box-shadow:
+    0 0 0 4px rgba(214,173,85,.08),
+    0 0 25px rgba(214,173,85,.20);
+
+  animation:logoPulse 3s ease-in-out infinite;
+}
+
+.brand{
+  line-height:1.2;
+  flex:1;
+}
+
+.brand strong{
+  display:block;
+  color:#fff;
+  font-size:17px;
+  letter-spacing:.5px;
+}
+
+.brand small{
+  color:var(--gold-light);
+  font-size:12px;
+}
+
+/* BOUTON ACCUEIL */
+
+.home-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+
+  padding:10px 14px;
+
+  color:#fff;
+  text-decoration:none;
+
+  font-size:12px;
+  font-weight:bold;
+
+  background:rgba(214,173,85,.10);
+
+  border:1px solid rgba(214,173,85,.35);
+  border-radius:12px;
+
+  transition:
+    transform .25s ease,
+    background .25s ease,
+    box-shadow .25s ease,
+    border-color .25s ease;
+
+  white-space:nowrap;
+}
+
+.home-btn:hover{
+  transform:translateY(-2px);
+
+  background:var(--gold);
+  color:#071225;
+
+  border-color:var(--gold);
+
+  box-shadow:
+    0 8px 25px rgba(214,173,85,.22);
+}
+
+.home-btn:active{
+  transform:scale(.96);
+}
+
+/* CONTAINER */
+
+.container{
+  width:min(1100px,calc(100% - 30px));
+  margin:0 auto;
+  padding:30px 0 60px;
+}
+
+/* HERO */
+
+.hero{
+  position:relative;
+  overflow:hidden;
+
+  min-height:190px;
+
+  margin-bottom:25px;
+  padding:30px 25px;
+
+  display:flex;
+  align-items:center;
+  gap:22px;
+
+  border:1px solid var(--border);
+  border-radius:24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(13,27,62,.96),
+      rgba(10,24,49,.90)
+    );
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,255,255,.04);
+
+  animation:fadeUp .8s ease;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+
+  width:220px;
+  height:220px;
+
+  right:-80px;
+  top:-80px;
+
+  border-radius:50%;
+
+  background:rgba(214,173,85,.08);
+  filter:blur(5px);
+}
+
+.hero-logo{
+  width:82px;
+  height:82px;
+
+  flex-shrink:0;
+
+  border-radius:50%;
+  object-fit:cover;
+
+  background:#fff;
+
+  border:2px solid var(--gold);
+
+  box-shadow:
+    0 0 30px rgba(214,173,85,.20);
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+}
+
+.badge{
+  display:inline-block;
+
+  padding:6px 11px;
+  margin-bottom:10px;
+
+  border-radius:30px;
+
+  background:rgba(214,173,85,.10);
+  border:1px solid rgba(214,173,85,.25);
+
+  color:var(--gold-light);
+
+  font-size:11px;
+  font-weight:bold;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+h1{
+  font-size:clamp(23px,5vw,34px);
+  margin-bottom:8px;
+  color:#fff;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
+}
+
+/* TABLE */
+
+.table-card{
+  position:relative;
+
+  background:rgba(10,20,37,.84);
+
+  border:1px solid var(--border);
+
+  border-radius:22px;
+
+  padding:12px;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.30);
+
+  overflow:hidden;
+
+  animation:fadeUp 1s ease;
+}
+
+.table-card::before{
+  content:"";
+
+  position:absolute;
+  top:0;
+  left:10%;
+  right:10%;
+
+  height:1px;
+
+  background:linear-gradient(
+    90deg,
+    transparent,
+    var(--gold),
+    transparent
+  );
+
+  opacity:.6;
+}
+
+.table-wrapper{
+  width:100%;
+  overflow-x:auto;
+  border-radius:15px;
+}
+
+table{
+  width:100%;
+  min-width:720px;
+
+  border-collapse:separate;
+  border-spacing:0;
+
+  background:rgba(255,255,255,.025);
+}
+
+thead th{
+  background:linear-gradient(
+    135deg,
+    #0d1b3e,
+    #142a55
+  );
+
+  color:#fff;
+
+  padding:15px 12px;
+
+  font-size:11px;
+
+  text-align:left;
+
+  letter-spacing:.7px;
+
+  border-bottom:1px solid rgba(214,173,85,.25);
+}
+
+thead th:first-child{
+  border-radius:12px 0 0 0;
+}
+
+thead th:last-child{
+  border-radius:0 12px 0 0;
+}
+
+tbody tr{
+  transition:
+    background .25s ease,
+    transform .25s ease;
+}
+
+tbody tr:hover{
+  background:rgba(214,173,85,.055);
+  transform:translateX(3px);
+}
+
+tbody td{
+  padding:14px 12px;
+
+  border-bottom:1px solid rgba(255,255,255,.06);
+
+  font-size:13px;
+
+  color:#dce4f0;
+
+  vertical-align:middle;
+}
+
+tbody tr:last-child td{
+  border-bottom:none;
+}
+
+.day{
+  color:var(--gold-light);
+  font-weight:bold;
+  white-space:nowrap;
+}
+
+.person{
+  color:var(--gold-light);
+  font-weight:bold;
+}
+
+/* FOOTER */
+
+.footer{
+  text-align:center;
+
+  margin-top:25px;
+
+  color:#718096;
+
+  font-size:12px;
+}
+
+.footer span{
+  color:var(--gold);
+  font-weight:bold;
+}
+
+/* ANIMATIONS */
+
+@keyframes headerDown{
+  from{
+    opacity:0;
+    transform:translateY(-20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(25px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes logoPulse{
+  0%,100%{
+    box-shadow:
+      0 0 0 4px rgba(214,173,85,.08),
+      0 0 20px rgba(214,173,85,.15);
+  }
+
+  50%{
+    box-shadow:
+      0 0 0 7px rgba(214,173,85,.04),
+      0 0 32px rgba(214,173,85,.30);
+  }
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+  header{
+    min-height:68px;
+    padding:8px 12px;
+  }
+
+  header img{
+    width:44px;
+    height:44px;
+  }
+
+  .brand strong{
+    font-size:15px;
+  }
+
+  .brand small{
+    font-size:10px;
+  }
+
+  .home-btn{
+    padding:9px 10px;
+    font-size:11px;
+  }
+
+  .home-btn span{
+    display:none;
+  }
+
+  .container{
+    width:calc(100% - 20px);
+    padding-top:20px;
+  }
+
+  .hero{
+    min-height:170px;
+    padding:23px 18px;
+    gap:15px;
+    border-radius:20px;
+  }
+
+  .hero-logo{
+    width:62px;
+    height:62px;
+  }
+
+  h1{
+    font-size:22px;
+  }
+
+  .subtitle{
+    font-size:12px;
+  }
+
+  .table-card{
+    padding:7px;
+    border-radius:17px;
+  }
+
+  thead th{
+    padding:13px 9px;
+  }
+
+  tbody td{
+    padding:13px 9px;
+  }
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+  width:7px;
+  height:7px;
+}
+
+::-webkit-scrollbar-track{
+  background:#071225;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#263858;
+  border-radius:10px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:var(--gold);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <img
+    src="logo.png"
+    alt="Logo MI.C.L.A"
+    onerror="this.style.display='none'"
+  >
+
+  <div class="brand">
+    <strong>MI.C.L.A</strong>
+    <small>Cité de Refuge</small>
+  </div>
+
+  <!-- RETOUR ACCUEIL -->
+  <a href="index.html" class="home-btn">
+    🏠 <span>Accueil</span>
+  </a>
+
+</header>
+
+
+<main class="container">
+
+  <section class="hero">
+
+    <img
+      class="hero-logo"
+      src="logo.png"
+      alt="Logo de l'église"
+    >
+
+    <div class="hero-content">
+
+      <span class="badge">
+        Programme officiel
+      </span>
+
+      <h1>
+        Programme de la semaine
+      </h1>
+
+      <p class="subtitle">
+        Retrouvez les différentes activités de
+        MI.C.L.A — Cité de Refuge.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <section class="table-card">
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>JOUR</th>
+            <th>ACTIVITÉ</th>
+            <th>HEURE</th>
+            <th>PRÉDICATEUR</th>
+            <th>MODÉ</th>
+          </tr>
+        </thead>
+
+        <tbody id="program-table">
+
+          <tr>
+            <td class="day">Lundi</td>
+            <td>Une Heure avec Jésus</td>
+            <td>17h00 - 18h00</td>
+            <td class="person">—</td>
+            <td class="person">—</td>
+          </tr>
+
+          <tr>
+            <td class="day">Mardi</td>
+            <td>Partage biblique</td>
+            <td>17h00 - 18h00</td>
+            <td class="person">—</td>
+            <td class="person">—</td>
+          </tr>
+
+          <tr>
+            <td class="day">Mercredi</td>
+            <td>Culte d'enseignement</td>
+            <td>17h30 - 19h30</td>
+            <td class="person">—</td>
+            <td class="person">—</td>
+          </tr>
+
+          <tr>
+            <td class="day">Jeudi</td>
+            <td>Intercession des serviteurs</td>
+            <td>17h00 - 18h00</td>
+            <td class="person">—</td>
+            <td class="person">—</td>
+          </tr>
+
+          <tr>
+            <td class="day">Vendredi</td>
+            <td>Culte de combat spirituel</td>
+            <td>17h30 - 19h30</td>
+            <td class="person">—</td>
+            <td class="person">—</td>
+          </tr>
+
+          <tr>
+            <td class="day">Samedi</td>
+            <td>Réunion Mamans</td>
+            <td>08h30 - 12h00</td>
+            <td class="person">—</td>
+            <td class="person">—</td>
+          </tr>
+
+          <tr>
+            <td class="day">Samedi</td>
+            <td>Suivi et évangélisation</td>
+            <td>14h30</td>
+            <td class="person">—</td>
+            <td class="person">—</td>
+          </tr>
+
+          <tr>
+            <td class="day">Samedi</td>
+            <td>Département de jeunesse</td>
+            <td>16h30 - 17h30</td>
+            <td class="person">—</td>
+            <td class="person">—</td>
+          </tr>
+
+          <tr>
+            <td class="day">Dimanche</td>
+            <td>Culte d'adoration</td>
+            <td>07h30 - 10h30</td>
+            <td class="person">—</td>
+            <td class="person">—</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <div class="footer">
+    MI.C.L.A — <span>Cité de Refuge</span>
+  </div>
+
+</main>
+
+
+<script>
+
+const KEY = "micla_programme_admin";
+
+
+function loadProgramme(){
+
+  try{
+
+    const saved = localStorage.getItem(KEY);
+
+    if(!saved) return;
+
+    const data = JSON.parse(saved);
+
+    if(!Array.isArray(data)) return;
+
+    const rows =
+      document.querySelectorAll("#program-table tr");
+
+    data.forEach((item,i)=>{
+
+      if(!rows[i]) return;
+
+      const tds =
+        rows[i].querySelectorAll("td");
+
+      if(tds[3]){
+
+        const value =
+          item.preacher ||
+          item.predicateur ||
+          "";
+
+        tds[3].textContent =
+          value.trim() || "—";
+      }
+
+      if(tds[4]){
+
+        const value =
+          item.moderator ||
+          item.moderateur ||
+          "";
+
+        tds[4].textContent =
+          value.trim() || "—";
+      }
+
+    });
+
+  }catch(error){
+
+    console.log("Erreur programme :",error);
+
+  }
+
+}
+
+
+function animateRows(){
+
+  const rows =
+    document.querySelectorAll("#program-table tr");
+
+  rows.forEach((row,index)=>{
+
+    row.style.opacity="0";
+    row.style.transform="translateY(12px)";
+
+    setTimeout(()=>{
+
+      row.style.transition=
+        "opacity .4s ease, transform .4s ease";
+
+      row.style.opacity="1";
+      row.style.transform="translateY(0)";
+
+    },100 + index * 70);
+
+  });
+
+}
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
+
+    loadProgramme();
+    animateRows();
+
+  }
+);
+
+
+window.addEventListener(
+  "storage",
+  function(event){
+
+    if(event.key === KEY){
+      loadProgramme();
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>

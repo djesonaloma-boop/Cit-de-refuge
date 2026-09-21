@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin — Programme MI.C.L.A</title>
+
+<style>
+:root{
+  --bg:#060b14;
+  --surface:#0e1726;
+  --surface2:#121e30;
+  --gold:#d6ad55;
+  --gold-light:#f1d58b;
+  --text:#e8eef7;
+  --muted:#8d9bb0;
+  --border:rgba(255,255,255,.08);
+  --green:#35c58b;
+  --red:#ef6b73;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Inter,system-ui,-apple-system,
+  BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(214,173,85,.06),
+      transparent 30%
+    ),
+    var(--bg);
+
+  color:var(--text);
+  min-height:100vh;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+
+  min-height:72px;
+
+  padding:12px 5%;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+
+  background:rgba(6,11,20,.9);
+
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+
+  border-bottom:1px solid var(--border);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  color:white;
+  text-decoration:none;
+}
+
+.brand img{
+  width:45px;
+  height:45px;
+
+  object-fit:contain;
+
+  border-radius:12px;
+
+  border:1px solid rgba(214,173,85,.3);
+}
+
+.brand strong{
+  display:block;
+  color:var(--gold-light);
+  font-size:15px;
+}
+
+.brand span{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.back{
+  padding:9px 13px;
+
+  border-radius:10px;
+
+  color:var(--gold-light);
+  text-decoration:none;
+
+  background:rgba(214,173,85,.1);
+
+  border:1px solid rgba(214,173,85,.25);
+
+  font-size:12px;
+  font-weight:700;
+}
+
+main{
+  width:94%;
+  max-width:1200px;
+
+  margin:35px auto 60px;
+}
+
+.page-title{
+  margin-bottom:25px;
+}
+
+.page-title h1{
+  color:var(--gold-light);
+
+  font-size:clamp(25px,5vw,38px);
+
+  margin-bottom:7px;
+}
+
+.page-title p{
+  color:var(--muted);
+
+  font-size:14px;
+
+  line-height:1.7;
+}
+
+.card{
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.025),
+      rgba(255,255,255,.008)
+    ),
+    var(--surface);
+
+  border:1px solid var(--border);
+
+  border-radius:18px;
+
+  padding:20px;
+
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+
+  overflow:hidden;
+}
+
+.card-title{
+  color:var(--gold-light);
+
+  font-size:19px;
+
+  margin-bottom:8px;
+}
+
+.card-info{
+  color:var(--muted);
+
+  font-size:13px;
+
+  margin-bottom:20px;
+}
+
+.table-wrapper{
+  width:100%;
+  overflow-x:auto;
+
+  border-radius:14px;
+
+  border:1px solid var(--border);
+}
+
+table{
+  width:100%;
+
+  min-width:1050px;
+
+  border-collapse:collapse;
+
+  background:#091321;
+}
+
+thead{
+  background:
+    linear-gradient(
+      135deg,
+      #15243a,
+      #101c2e
+    );
+}
+
+th{
+  padding:15px 12px;
+
+  color:var(--gold-light);
+
+  text-align:left;
+
+  font-size:12px;
+
+  text-transform:uppercase;
+
+  letter-spacing:.35px;
+
+  border-bottom:1px solid rgba(214,173,85,.24);
+}
+
+td{
+  padding:12px;
+
+  color:#d6dfeb;
+
+  font-size:13px;
+
+  vertical-align:middle;
+
+  border-bottom:1px solid rgba(255,255,255,.055);
+}
+
+tbody tr:last-child td{
+  border-bottom:none;
+}
+
+.day{
+  color:var(--gold-light);
+
+  font-weight:800;
+
+  white-space:nowrap;
+}
+
+.activity{
+  color:white;
+
+  font-weight:700;
+}
+
+.time{
+  white-space:nowrap;
+}
+
+.person-input{
+  width:100%;
+
+  min-width:190px;
+
+  padding:11px 12px;
+
+  border-radius:10px;
+
+  border:1px solid rgba(255,255,255,.1);
+
+  outline:none;
+
+  background:#111d2d;
+
+  color:white;
+
+  font-family:inherit;
+
+  font-size:13px;
+}
+
+.person-input::placeholder{
+  color:#66758a;
+}
+
+.person-input:focus{
+  border-color:rgba(214,173,85,.65);
+
+  box-shadow:
+    0 0 0 3px rgba(214,173,85,.08);
+}
+
+.actions{
+  display:flex;
+
+  flex-wrap:wrap;
+
+  gap:10px;
+
+  margin-top:20px;
+}
+
+button{
+  border:none;
+
+  border-radius:11px;
+
+  padding:12px 17px;
+
+  font-family:inherit;
+
+  font-size:13px;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  transition:.25s ease;
+}
+
+.save-btn{
+  background:
+    linear-gradient(
+      135deg,
+      var(--gold-light),
+      var(--gold)
+    );
+
+  color:#07101c;
+}
+
+.save-btn:hover{
+  transform:translateY(-2px);
+}
+
+.reset-btn{
+  background:var(--surface2);
+
+  color:#dce5ef;
+
+  border:1px solid var(--border);
+}
+
+.message{
+  margin-top:14px;
+
+  padding:11px 13px;
+
+  border-radius:10px;
+
+  display:none;
+
+  font-size:13px;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.success{
+  color:#8ee7bf;
+
+  background:rgba(53,197,139,.08);
+
+  border:1px solid rgba(53,197,139,.2);
+}
+
+.message.error{
+  color:#ff9ca2;
+
+  background:rgba(239,107,115,.08);
+
+  border:1px solid rgba(239,107,115,.2);
+}
+
+.note{
+  margin-top:20px;
+
+  padding:15px;
+
+  border-radius:13px;
+
+  background:rgba(214,173,85,.06);
+
+  border:1px solid rgba(214,173,85,.16);
+
+  color:#cbd5e2;
+
+  font-size:13px;
+
+  line-height:1.7;
+}
+
+.note strong{
+  color:var(--gold-light);
+}
+
+footer{
+  text-align:center;
+
+  padding:30px 15px;
+
+  border-top:1px solid var(--border);
+
+  color:var(--muted);
+
+  font-size:12px;
+}
+
+@media(max-width:650px){
+
+  header{
+    padding:11px 4%;
+  }
+
+  .brand img{
+    width:41px;
+    height:41px;
+  }
+
+  .brand strong{
+    font-size:13px;
+  }
+
+  .brand span{
+    display:none;
+  }
+
+  .back{
+    font-size:11px;
+  }
+
+  main{
+    width:94%;
+    margin-top:25px;
+  }
+
+  .card{
+    padding:15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<a href="admin-dash.html" class="brand">
+
+<img
+src="../logo.png"
+alt="Logo MI.C.L.A"
+>
+
+<div>
+
+<strong>MI.C.L.A — ADMIN</strong>
+
+<span>Gestion du programme</span>
+
+</div>
+
+</a>
+
+
+<a href="admin-dash.html" class="back">
+← Tableau de bord
+</a>
+
+</header>
+
+
+<main>
+
+<div class="page-title">
+
+<h1>📅 Programme</h1>
+
+<p>
+Modifie uniquement les noms des prédicateurs
+et des modérateurs. Les activités et les horaires
+restent ceux du programme officiel.
+</p>
+
+</div>
+
+
+<section class="card">
+
+<h2 class="card-title">
+🗓️ Tableau hebdomadaire
+</h2>
+
+<p class="card-info">
+Écris simplement les noms dans les espaces prévus,
+puis clique sur « Enregistrer le programme ».
+</p>
+
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Jour</th>
+<th>Activité</th>
+<th>Heure</th>
+<th>Prédicateur</th>
+<th>Modérateur</th>
+</tr>
+
+</thead>
+
+
+<tbody>
+
+<tr>
+<td class="day">Lundi</td>
+<td class="activity">Une Heure avec Jésus</td>
+<td class="time">17h00 – 18h00</td>
+
+<td>
+<input
+class="person-input"
+id="preacher-0"
+type="text"
+placeholder="Nom du prédicateur"
+>
+</td>
+
+<td>
+<input
+class="person-input"
+id="moderator-0"
+type="text"
+placeholder="Nom du modérateur"
+>
+</td>
+</tr>
+
+
+<tr>
+<td class="day">Mardi</td>
+<td class="activity">Partage biblique</td>
+<td class="time">17h00 – 18h00</td>
+
+<td>
+<input
+class="person-input"
+id="preacher-1"
+type="text"
+placeholder="Nom du prédicateur"
+>
+</td>
+
+<td>
+<input
+class="person-input"
+id="moderator-1"
+type="text"
+placeholder="Nom du modérateur"
+>
+</td>
+</tr>
+
+
+<tr>
+<td class="day">Mercredi</td>
+<td class="activity">Culte d'enseignement</td>
+<td class="time">17h30 – 19h30</td>
+
+<td>
+<input
+class="person-input"
+id="preacher-2"
+type="text"
+placeholder="Nom du prédicateur"
+>
+</td>
+
+<td>
+<input
+class="person-input"
+id="moderator-2"
+type="text"
+placeholder="Nom du modérateur"
+>
+</td>
+</tr>
+
+
+<tr>
+<td class="day">Jeudi</td>
+<td class="activity">Intercession des serviteurs de Dieu</td>
+<td class="time">17h00 – 18h00</td>
+
+<td>
+<input
+class="person-input"
+id="preacher-3"
+type="text"
+placeholder="Nom du prédicateur"
+>
+</td>
+
+<td>
+<input
+class="person-input"
+id="moderator-3"
+type="text"
+placeholder="Nom du modérateur"
+>
+</td>
+</tr>
+
+
+<tr>
+<td class="day">Vendredi</td>
+<td class="activity">Culte de combat spirituel</td>
+<td class="time">17h30 – 19h30</td>
+
+<td>
+<input
+class="person-input"
+id="preacher-4"
+type="text"
+placeholder="Nom du prédicateur"
+>
+</td>
+
+<td>
+<input
+class="person-input"
+id="moderator-4"
+type="text"
+placeholder="Nom du modérateur"
+>
+</td>
+</tr>
+
+
+<tr>
+<td class="day">Samedi</td>
+<td class="activity">Réunion du département des Mamans</td>
+<td class="time">08h30 – 12h00</td>
+
+<td>
+<input
+class="person-input"
+id="preacher-5"
+type="text"
+placeholder="Nom du prédicateur"
+>
+</td>
+
+<td>
+<input
+class="person-input"
+id="moderator-5"
+type="text"
+placeholder="Nom du modérateur"
+>
+</td>
+</tr>
+
+
+<tr>
+<td class="day">Samedi</td>
+<td class="activity">Suivi et évangélisation</td>
+<td class="time">14h30</td>
+
+<td>
+<input
+class="person-input"
+id="preacher-6"
+type="text"
+placeholder="Nom du prédicateur"
+>
+</td>
+
+<td>
+<input
+class="person-input"
+id="moderator-6"
+type="text"
+placeholder="Nom du modérateur"
+>
+</td>
+</tr>
+
+
+<tr>
+<td class="day">Samedi</td>
+<td class="activity">Département de jeunesse</td>
+<td class="time">16h30 – 17h30</td>
+
+<td>
+<input
+class="person-input"
+id="preacher-7"
+type="text"
+placeholder="Nom du prédicateur"
+>
+</td>
+
+<td>
+<input
+class="person-input"
+id="moderator-7"
+type="text"
+placeholder="Nom du modérateur"
+>
+</td>
+</tr>
+
+
+<tr>
+<td class="day">Dimanche</td>
+<td class="activity">Culte d'adoration et d'action de grâce</td>
+<td class="time">07h30 – 10h30</td>
+
+<td>
+<input
+class="person-input"
+id="preacher-8"
+type="text"
+placeholder="Nom du prédicateur"
+>
+</td>
+
+<td>
+<input
+class="person-input"
+id="moderator-8"
+type="text"
+placeholder="Nom du modérateur"
+>
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="save-btn"
+id="save-programme"
+>
+💾 Enregistrer le programme
+</button>
+
+
+<button
+class="reset-btn"
+id="reset-programme"
+>
+↺ Réinitialiser
+</button>
+
+</div>
+
+
+<div
+id="message"
+class="message"
+></div>
+
+
+<div class="note">
+
+<strong>ℹ️ Fonctionnement :</strong>
+
+tu écris le nom de la personne dans la case
+correspondante, puis tu appuies sur
+<strong>Enregistrer le programme</strong>.
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+MI.C.L.A — CITÉ DE REFUGE
+
+<br>
+
+Administration du programme
+
+</footer>
+
+
+<script src="admin-programme.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MI.C.L.A — Cité de Refuge</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{--gold:#d8b45a;--gold2:#f1d98b;--muted:#91a2bc;--green:#25D366}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#06152f;color:#fff;font-family:Arial;min-height:100vh}
+header{background:#030914;padding:12px 16px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:10}
+.logo{width:45px;height:45px;border-radius:50%;border:2px solid var(--gold)}
+.brand h1{color:var(--gold2);font-size:16px}.brand p{color:var(--muted);font-size:11px}
+.section{padding:16px;max-width:1100px;margin:auto}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:linear-gradient(145deg,#102d59,#081424);border:1px solid rgba(216,180,90,.2);border-radius:22px;padding:16px}
+.profile{display:flex;gap:12px;align-items:center}
+.profile img{width:70px;height:70px;border-radius:50%;border:2px solid var(--gold);object-fit:cover}
+.profile h4{font-size:15px}.profile p{font-size:11px;color:var(--gold2)}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.btn{height:46px;border-radius:12px;border:1px solid rgba(216,180,90,.2);background:rgba(255,255,255,.06);color:#fff;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.btn:active{transform:scale(.96)}.btn i{color:var(--gold2)}
+.whatsapp{background:var(--green);border:none}.whatsapp i{color:#fff}
+
+/* MODAL QUI S'OUVRE TOUJOURS */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:none}
+.modal.show{display:flex;align-items:flex-end;justify-content:center}
+.modal-box{width:100%;max-width:650px;max-height:90vh;overflow:auto;background:#0f2440;border-radius:22px 22px 0 0;padding:16px;border:1px solid rgba(216,180,90,.3);animation:slide .25s ease}
+@keyframes slide{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.modal-head h3{color:var(--gold2);font-size:18px}
+.close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px}
+.item{background:rgba(255,255,255,.06);border-radius:14px;padding:12px;margin:10px 0;border:1px solid rgba(216,180,90,.15)}
+.item h4{color:var(--gold2);font-size:14px;margin-bottom:6px}
+.empty{text-align:center;padding:40px 15px;color:var(--muted);font-size:14px;line-height:1.5}
+.empty i{font-size:40px;color:var(--gold);display:block;margin-bottom:12px}
+@media(max-width:700px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><img class="logo" src="logo.png"><div class="brand"><h1>MI.C.L.A</h1><p>Cité de Refuge</p></div></header>
+
+<div class="section">
+<div class="cards">
+<div class="card">
+<div class="profile"><img src="pasteur.jpg"><div><h4>Pasteur Jérémie Bakadisanga</h4><p>Pasteur principal</p></div></div>
+<div class="buttons">
+<button class="btn" onclick="openAnnonces('pasteur')"><i class="fa-solid fa-bullhorn"></i> Annonces</button>
+<button class="btn" onclick="openMessages('pasteur')"><i class="fa-solid fa-message"></i> Message</button>
+<button class="btn" onclick="openVocaux('pasteur')"><i class="fa-solid fa-microphone"></i> Vocaux</button>
+<button class="btn" onclick="openPrieres('pasteur')"><i class="fa-solid fa-hands-praying"></i> Prière</button>
+<a class="btn whatsapp" href="https://wa.me/243904490937"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+<a class="btn" href="tel:+243904490937"><i class="fa-solid fa-phone"></i> Appeler</a>
+</div>
+</div>
+
+<div class="card">
+<div class="profile"><img src="berger.jpg"><div><h4>Chardin Vuanda</h4><p>Berger</p></div></div>
+<div class="buttons">
+<button class="btn" onclick="openAnnonces('berger')"><i class="fa-solid fa-bullhorn"></i> Annonces</button>
+<button class="btn" onclick="openMessages('berger')"><i class="fa-solid fa-message"></i> Message</button>
+<button class="btn" onclick="openVocaux('berger')"><i class="fa-solid fa-microphone"></i> Vocaux</button>
+<button class="btn" onclick="openPrieres('berger')"><i class="fa-solid fa-hands-praying"></i> Prière</button>
+<a class="btn whatsapp" href="https://wa.me/243896039439"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+<a class="btn" href="tel:+243896039439"><i class="fa-solid fa-phone"></i> Appeler</a>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal"><div class="modal-box"><div class="modal-head"><h3 id="modalTitle">Titre</h3><button class="close" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
+
+<script>
+// --- TOUT LE JS ICI, PLUS BESOIN DE FICHIER EXTERNE ---
+let cur="pasteur";
+function esc(t){return String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function getAll(k){ try{let d=JSON.parse(localStorage.getItem(k)||"[]"); return Array.isArray(d)?d:[];}catch{return[];} }
+function show(title, html){
+  document.getElementById("modalTitle").textContent=title;
+  document.getElementById("modalBody").innerHTML=html;
+  document.getElementById("modal").classList.add("show");
+}
+function closeModal(){ document.getElementById("modal").classList.remove("show"); }
+document.getElementById("modal").addEventListener("click",e=>{ if(e.target.id==="modal") closeModal(); });
+
+function openAnnonces(p){
+  cur=p;
+  let list=getAll(`micla_${p}_annonces`); if(!list.length) list=getAll(`micla_${p}_announcements`);
+  let h="";
+  if(!list.length){
+    h=`<div class="empty"><i class="fa-solid fa-bullhorn"></i><b>Il n'y a aucune annonce</b><br>pour ${p==="pasteur"?"le Pasteur":"le Berger"} pour le moment.</div>`;
+  } else {
+    list.forEach(it=>{ h+=`<div class="item"><h4>📢 ${esc(it.title||"Annonce")}</h4><p>${esc(it.content||it.text||"")}</p><small style="color:var(--muted)">${esc(it.date||"")}</small></div>`; });
+  }
+  show("Annonces - "+p, h);
+}
+function openPrieres(p){
+  let list=getAll(`micla_${p}_prieres`); if(!list.length) list=getAll(`micla_${p}_prayers`);
+  let h="";
+  if(!list.length){
+    h=`<div class="empty"><i class="fa-solid fa-hands-praying"></i><b>Il n'y a aucune prière</b><br>pour ${p==="pasteur"?"le Pasteur":"le Berger"} pour le moment.</div>`;
+  } else {
+    list.forEach(it=>{ h+=`<div class="item"><h4>🙏 ${esc(it.title||"Prière")}</h4><p style="white-space:pre-line">${esc(it.content||it.text||"")}</p></div>`; });
+  }
+  show("Prières - "+p, h);
+}
+function openMessages(p){
+  let list=getAll(`micla_${p}_messages`);
+  let h="";
+  if(!list.length){
+    h=`<div class="empty"><i class="fa-solid fa-message"></i><b>Il n'y a aucun message</b><br>pour ${p==="pasteur"?"le Pasteur":"le Berger"} pour le moment.</div>`;
+  } else {
+    list.forEach(it=>{ h+=`<div class="item"><h4>💬 ${esc(it.title||"Message")}</h4><p>${esc(it.content||"")}</p><small>${esc(it.author||"")}</small></div>`; });
+  }
+  show("Messages - "+p, h);
+}
+function openVocaux(p){
+  let list=getAll(`micla_${p}_vocaux`); if(!list.length) list=getAll(`micla_${p}_audio`);
+  let h="";
+  if(!list.length){
+    h=`<div class="empty"><i class="fa-solid fa-microphone"></i><b>Il n'y a aucun vocal</b><br>pour ${p==="pasteur"?"le Pasteur":"le Berger"} pour le moment.</div>`;
+  } else {
+    list.forEach((it,i)=>{
+      let url=it.audio||it.url||"";
+      h+=`<div class="item"><h4>🎙️ ${esc(it.title||"Vocal "+(i+1))}</h4>`;
+      if(url) h+=`<audio controls src="${url}" style="width:100%;margin-top:8px"></audio>`;
+      else h+=`<p>Audio invalide</p>`;
+      h+=`</div>`;
+    });
+  }
+  show("Vocaux - "+p, h);
+}
+</script>
+</body>
+</html>
